@@ -2,6 +2,7 @@
 import streamlit as st
 import numpy as np
 import joblib
+import tensorflow as tf
 
 # Page configuration
 st.set_page_config(
@@ -17,12 +18,16 @@ st.write(
 )
 
 # Load ANN model
-model = joblib.load("employee_performance_ann.pkl")
+model = tf.keras.models.load_model(
+    "employee_performance_ann.keras"
+)
 
 # Load scaler
-scaler = joblib.load("employee_performance_scaler.pkl")
+scaler = joblib.load(
+    "employee_performance_scaler.pkl"
+)
 
-# Training Hours input
+# Training Hours
 training_hours = st.number_input(
     "Training Hours",
     min_value=0.0,
@@ -31,7 +36,7 @@ training_hours = st.number_input(
     step=1.0
 )
 
-# Attendance input
+# Attendance
 attendance = st.number_input(
     "Attendance (%)",
     min_value=0.0,
@@ -40,7 +45,7 @@ attendance = st.number_input(
     step=1.0
 )
 
-# Prediction button
+# Prediction
 if st.button("Predict Performance"):
 
     # Prepare input
@@ -48,16 +53,16 @@ if st.button("Predict Performance"):
         [training_hours, attendance]
     ])
 
-    # Scale input using the saved scaler
+    # Scale input
     input_scaled = scaler.transform(input_data)
 
-    # ANN prediction
+    # Predict
     probability = model.predict(
         input_scaled,
         verbose=0
     )[0][0]
 
-    # Convert probability into result
+    # Convert probability to result
     if probability >= 0.5:
         result = "Good"
     else:
@@ -87,3 +92,4 @@ if st.button("Predict Performance"):
         attendance,
         "%"
     )
+
