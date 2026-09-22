@@ -1,4 +1,4 @@
-```python
+
 import streamlit as st
 import numpy as np
 import joblib
@@ -22,7 +22,7 @@ model = joblib.load("employee_performance_ann.pkl")
 # Load scaler
 scaler = joblib.load("employee_performance_scaler.pkl")
 
-# User inputs
+# Training Hours input
 training_hours = st.number_input(
     "Training Hours",
     min_value=0.0,
@@ -31,6 +31,7 @@ training_hours = st.number_input(
     step=1.0
 )
 
+# Attendance input
 attendance = st.number_input(
     "Attendance (%)",
     min_value=0.0,
@@ -47,7 +48,7 @@ if st.button("Predict Performance"):
         [training_hours, attendance]
     ])
 
-    # Scale input
+    # Scale input using the saved scaler
     input_scaled = scaler.transform(input_data)
 
     # ANN prediction
@@ -56,7 +57,7 @@ if st.button("Predict Performance"):
         verbose=0
     )[0][0]
 
-    # Convert probability to result
+    # Convert probability into result
     if probability >= 0.5:
         result = "Good"
     else:
@@ -86,25 +87,3 @@ if st.button("Predict Performance"):
         attendance,
         "%"
     )
-```
-
-Your GitHub folder should contain **exactly**:
-
-```text
-employee_ann_app/
-│
-├── app.py
-├── employee_performance_ann.pkl
-├── employee_performance_scaler.pkl
-└── requirements.txt
-```
-
-And `requirements.txt`:
-
-```text
-streamlit
-tensorflow
-numpy
-joblib
-scikit-learn
-```
